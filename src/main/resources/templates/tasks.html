@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .todo-container {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+        .task-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+        .btn-toggle, .btn-delete {
+            width: 100px;
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+    </style>
+    <title>Todo Application</title>
+</head>
+<body>
+    <div class="todo-container">
+        <h1 class="text-center mb-4">Todo Application</h1>
+        <form action="/" method="post" class="row g-3 mb-4">
+            <div class="col-md-9">
+                <input class="form-control form-control-lg" type="text" name="title" placeholder="Add a new task..." required>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary btn-lg w-100">Add Task</button>
+            </div>
+        </form>
+
+        <div th:if="${tasks != null and not #lists.isEmpty(tasks)}">
+            <div class="list-group">
+                <div th:each="task : ${tasks}" class="list-group-item task-card d-flex justify-content-between align-items-center">
+                    <span th:class="${task.completed} ? 'completed'" th:text="${task.title} ?: 'No Title'">Task Title</span>
+                    <div>
+                        <form action="/toggle" th:action="@{/toggle/{id}(id=${task.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-outline-success btn-sm btn-toggle" th:text="${task.completed} ? 'Undo' : 'Complete'"></button>
+                        </form>
+                        <form action="/delete" th:action="@{/delete/{id}(id=${task.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-outline-danger btn-sm btn-delete">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${tasks == null or #lists.isEmpty(tasks)}" class="text-center text-muted">
+            <p>No tasks available. Add a task to get started!</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
